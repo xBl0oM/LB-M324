@@ -26,6 +26,8 @@ jobs:
         python -m venv venv  # Erstelle eine virtuelle Umgebung
         source venv/bin/activate  # Aktiviere die virtuelle Umgebung
         pip install --upgrade pip  # Aktualisiere pip
+        pip install -r requirements.txt  # Installiere alle Abhängigkeiten aus requirements.txt
+
         
 
     - name: Run tests
