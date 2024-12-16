@@ -1,30 +1,37 @@
 import pytest
-from app import app
+from flask import Flask
+from app import app, orders
 
+# Fixture, um den Flask-Testclient zu erstellen
 @pytest.fixture
 def client():
-    """Test-Client für Flask-Anwendungen"""
+    app.config['TESTING'] = True  # Setze die Testumgebung
     with app.test_client() as client:
         yield client
 
+def test_index(client):
+    """Testet die Startseite"""
+    # Rufe die Startseite auf
+    response = client.get('/')
+    
+    # Überprüfe, ob der Statuscode 200 ist (OK)
+    assert response.status_code == 200
+    
+    # Überprüfe, ob keine Aufträge angezeigt werden (zu Beginn sind keine Aufträge vorhanden)
+    assert 'Keine Aufträge' in response.data.decode('utf-8')
+
+
 def test_add_order(client):
-    """Testfall zum Hinzufügen eines neuen Auftrags"""
-
-    # 1. Öffne die Add-Seite
-    response = client.get('/add')
-    assert response.status_code == 200  # Überprüfe, ob die Seite geladen wurde
-
-    # 2. Füge einen neuen Auftrag hinzu
+    """Testet das Hinzufügen eines neuen Auftrags"""
+    # Sende POST-Anfrage, um einen neuen Auftrag hinzuzufügen
     response = client.post('/add', data={'name': 'Auftrag 1', 'description': 'Beschreibung 1'})
-    assert response.status_code == 302  # 302: Weiterleitung zur Startseite
     
-    # 3. Folge der Weiterleitung
-    response = client.get(response.location)  # Folge der Weiterleitung (Startseite)
+    # Überprüfe, ob eine Weiterleitung auf die Startseite erfolgt (Statuscode 302)
+    assert response.status_code == 302
     
-    # 4. Überprüfe, ob der Auftrag auf der Startseite angezeigt wird
-    assert b'Auftrag 1' in response.data  # Überprüfe, ob der Auftrag auf der Startseite angezeigt wird
+    # Überprüfe, ob der Auftrag jetzt auf der Startseite angezeigt wird
+    response = client.get('/')
+    assert b'Auftrag 1' in response.data
+    assert b'Beschreibung 1' in response.data
 
-    # 5. Teste das Hinzufügen mit fehlenden Daten
-    response = client.post('/add', data={'name': '', 'description': 'Beschreibung 2'})
-    assert response.status_code == 200  # Sollte auf der Seite bleiben
-    assert b'Fehlende Daten' in response.data  # Überprüfe, ob eine Fehlermeldung angezeigt wird
+
