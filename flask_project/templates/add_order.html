@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Neuen Auftrag hinzufügen{% endblock %}
+{% block content %}
+<h2>Neuen Auftrag hinzufügen</h2>
+<form method="POST">
+    <label for="name">Auftragsname:</label><br>
+    <input type="text" id="name" name="name" required><br><br>
+    <label for="description">Beschreibung:</label><br>
+    <textarea id="description" name="description" rows="4" required></textarea><br><br>
+    <button type="submit">Hinzufügen</button>
+</form>
+{% endblock %}

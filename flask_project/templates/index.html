@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h2>Alle Aufträge</h2>
+{% if orders %}
+    <ul>
+        {% for order in orders %}
+        <li><strong>{{ order.name }}</strong>: {{ order.description }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Keine Aufträge vorhanden.</p>
+{% endif %}
+{% endblock %}
