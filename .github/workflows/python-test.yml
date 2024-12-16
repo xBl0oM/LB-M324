@@ -1,26 +1,29 @@
-name: Python Tests
+name: Run Flask Tests
 
 on:
   push:
     branches:
-      - main  # Der Workflow wird bei Pushes zum 'main' Branch ausgeführt. Ändere es nach Bedarf.
+      - main  # Ausführung des Workflows bei jedem Push auf den "main"-Branch
   pull_request:
     branches:
-      - main  # Der Workflow wird auch bei Pull Requests auf den 'main' Branch ausgeführt.
+      - main  # Ausführung des Workflows bei Pull Requests in den "main"-Branch
 
 jobs:
   test:
-    runs-on: ubuntu-latest  # Der Workflow wird auf der neuesten Ubuntu-Version ausgeführt.
-    
+    runs-on: ubuntu-latest  # Der Job läuft auf einem GitHub-hosted Ubuntu-Server
+
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3  # Diese Action holt den Code des Repositories
+    # Schritt 1: Checkout des Repositories
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
+    # Schritt 2: Setup Python
     - name: Set up Python
-      uses: actions/setup-python@v4  # Diese Action richtet Python ein
+      uses: actions/setup-python@v4
       with:
-        python-version: '3.9'  # Stelle sicher, dass du die richtige Python-Version verwendest
+        python-version: '3.9'  # Python-Version, die du verwenden möchtest
 
+    # Schritt 3: Installiere Abhängigkeiten
     - name: Install dependencies
       run: |
         python -m venv venv  # Erstelle eine virtuelle Umgebung
@@ -28,9 +31,8 @@ jobs:
         pip install --upgrade pip  # Aktualisiere pip
         pip install -r requirements.txt  # Installiere alle Abhängigkeiten aus requirements.txt
 
-        
-
+    # Schritt 4: Führe die Tests aus
     - name: Run tests
       run: |
-        source venv/bin/activate  # Aktiviere die virtuelle Umgebung
-        pytest  # Führe die Tests aus
+        source venv/bin/activate  # Stelle sicher, dass die virtuelle Umgebung aktiv ist
+        pytest  # Führe pytest aus, um die Tests zu starten
